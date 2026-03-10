@@ -18,6 +18,34 @@
                 </div>
             </div>
 
+              <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                    <x-nav-link :href="route('clients.index')" :active="request()->routeIs('clients.index')">
+                        {{ __('Clientes') }}
+                    </x-nav-link>
+                </div>
+            </div>
+
+            <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                    <x-nav-link :href="route('estoques.index')" :active="request()->routeIs('estoques.index')">
+                        {{ __('Estoques') }}
+                    </x-nav-link>
+                </div>
+            </div>
+
+            <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                    <x-nav-link :href="route('fornecedores.index')" :active="request()->routeIs('fornecedores.index')">
+                        {{ __('Fornecedores') }}
+                    </x-nav-link>
+                </div>
+            </div>
+
+            <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                    <x-nav-link :href="route('Produtos.index')" :active="request()->routeIs('Produtos.index')">
+                        {{ __('Produtos') }}
+                    </x-nav-link>
+                </div>
+            </div>
+
             <!-- Settings Dropdown -->
             <div class="hidden sm:flex sm:items-center sm:ms-6">
                 <x-dropdown align="right" width="48">

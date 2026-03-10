@@ -6,5 +6,5 @@ use Illuminate\Database\Eloquent\Model;
 
 class Estoques extends Model
 {
-    protected $fillable = ['telefone', 'endereco'];
+    protected $fillable = ['estoque_id', 'capacidade', 'localizacao'];
 }
