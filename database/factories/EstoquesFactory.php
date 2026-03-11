@@ -17,7 +17,7 @@ class EstoquesFactory extends Factory
     public function definition(): array {
     return [
         'telefone' => fake()->text(),
-        'endereco' => fake()->text,
+        'endereco' => fake()->text(),
     ];
 }
 }
