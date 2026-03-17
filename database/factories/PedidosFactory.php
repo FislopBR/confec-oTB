@@ -5,7 +5,7 @@ namespace Database\Factories;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Pedidos>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\pedido>
  */
 class PedidosFactory extends Factory
 {
@@ -18,6 +18,7 @@ class PedidosFactory extends Factory
     return [
         'cpf' => fake()->text(),
         'endereco' => fake()->text(),
+
     ];
 }
 }

@@ -10,7 +10,7 @@
             <div class="bg-white p-6 overflow-hidden shadow-sm sm:rounded-lg">
                 
                 <!-- Formulário apontando para a rota de salvar -->
-                <form action="{{ route('clients.store') }}" method="POST" class="space-y-4">
+                <form action="{{ route('clientes.store') }}" method="POST" class="space-y-4">
                     @csrf <!-- Obrigatório para segurança no Laravel -->
 
                     <div>
@@ -43,7 +43,7 @@
                     </div>
 
                     <div class="flex items-center justify-end mt-4">
-                        <a href="{{ route('clients.index') }}" class="mr-4 text-sm text-gray-600 hover:text-gray-900">Cancelar</a>
+                        <a href="{{ route('clientes.index') }}" class="mr-4 text-sm text-gray-600 hover:text-gray-900">Cancelar</a>
                         <button type="submit" class="inline-flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring ring-gray-300 disabled:opacity-25 transition ease-in-out duration-150">
                             Salvar Cliente
                         </button>

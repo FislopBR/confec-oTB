@@ -11,20 +11,23 @@ return new class extends Migration
      */
 public function up()
 {
-    Schema::create('estoques', function (Blueprint $table) {
-        $table->id(); // Este é o ID automático
-        $table->integer('estoque_id'); // <-- ADICIONE ESTA LINHA se for um código seu
-        $table->integer('capacidade');
-        $table->string('localizacao');
+    Schema::create('produtos', function (Blueprint $table) {
+        $table->id();
+        $table->string('nome');
+        $table->string('sku');
+        $table->decimal('preco', 10, 2);
+        $table->string('categoria');
+        $table->text('descricao')->nullable();
         $table->timestamps();
     });
 }
+
 
     /**
      * Reverse the migrations.
      */
     public function down(): void
     {
-        Schema::dropIfExists('estoques');
+        Schema::dropIfExists('produtos');
     }
 };

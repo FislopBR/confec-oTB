@@ -10,7 +10,7 @@ class EstoquesController extends Controller
 {
     public function index() 
     {
-    $estoques= \App\Models\Estoques::all(); // Busca todos os estoques
+    $estoques= Estoques::all(); // Busca todos os estoques
     return view('estoques.index', compact('estoques'));
 }
     public function create() {
@@ -20,12 +20,12 @@ class EstoquesController extends Controller
     public function store(Request $request)
     {
         $validatedData = $request->validate([
-            'estoque_id' => 'required|exists:produtos,id',
+            'estoque_id' => 'required|string|max:255',
             'capacidade' => 'nullable|string|max:8',
             'localizacao' => 'nullable|string|max:100',
         ]);
 
-        \App\Models\Estoques::create($request->all());
+        Estoques::create($validatedData);
 
         return redirect()->route('estoques.index')->with('success', 'Estoque cadastrado com sucesso!');
     }
@@ -40,10 +40,9 @@ public function edit(Estoques $estoques)
 public function update(Request $request, Estoques $estoques)
 {
     $request->validate([
-        'nome' => 'required|string|max:255',
-        'cpf' => 'required|string|unique:clientes,cpf,' . $estoques->id,
-        'email' => 'required|email|unique:clientes,email,' . $estoques->id,
-        'telefone' => 'required',
+            'estoque_id' => 'required|string|max:255',
+            'capacidade' => 'nullable|string|max:8',
+            'localizacao' => 'nullable|string|max:100',
     ]);
  $estoques->update($request->all());
     return redirect()->route('estoques.index')->with('success', 'Estoque atualizado!');
