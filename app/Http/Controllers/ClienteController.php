@@ -2,69 +2,96 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Cliente;
 use Illuminate\Http\Request;
-use App\Models\Cliente; 
-
 
 class ClienteController extends Controller
 {
-    // Lista todos os clientes
-    public function index() 
+    /**
+     * Exibe a lista de todos os clientes.
+     */
+    public function index()
     {
-        $clientes = Cliente::all(); 
+        $clientes = Cliente::all();
         return view('clientes.index', compact('clientes'));
     }
 
-    // Exibe o formulário de cadastro (a janela/página de inserção)
-    public function create() 
+    /**
+     * Mostra o formulário para cadastrar um novo cliente.
+     */
+    public function create()
     {
         return view('clientes.create');
     }
 
-    // Recebe os dados do formulário e salva no banco de dados
-    public function store(Request $request) 
+    /**
+     * Valida e armazena um novo cliente no banco de dados.
+     */
+    public function store(Request $request)
+{
+    $validated = $request->validate([
+        'nome'     => 'required|string|max:255',
+        'cpf'      => 'required|string|unique:clientes',
+        'email'    => 'required|email|unique:clientes',
+        'telefone' => 'required|string',
+        'endereco' => 'nullable|string',
+    ]);
+
+    // Opcional: limpar formatação de CPF e telefone
+    $validated['cpf'] = preg_replace('/\D/', '', $validated['cpf']);
+    $validated['telefone'] = preg_replace('/\D/', '', $validated['telefone']);
+
+    Cliente::create($validated);
+
+    return redirect()->route('clientes.index')->with('success', 'Cliente cadastrado com sucesso!');
+}
+
+    /**
+     * Exibe os detalhes de um cliente específico (read-only).
+     * Caso não queira esta funcionalidade, remova a rota 'show' em web.php.
+     */
+    public function show(Cliente $cliente)
     {
-        // 1. Validação simples para evitar dados vazios ou duplicados
-        $request->validate([
+        return view('clientes.show', compact('cliente'));
+    }
+
+    /**
+     * Mostra o formulário de edição de um cliente.
+     */
+    public function edit(Cliente $cliente)
+    {
+        return view('clientes.edit', compact('cliente'));
+    }
+
+    /**
+     * Atualiza os dados de um cliente existente.
+     */
+    public function update(Request $request, Cliente $cliente)
+    {
+        $validated = $request->validate([
             'nome'     => 'required|string|max:255',
-            'cpf'      => 'required|string|unique:clientes',
-            'email'    => 'required|email|unique:clientes',
+            'cpf'      => 'required|string|unique:clientes,cpf,' . $cliente->id,
+            'email'    => 'required|email|unique:clientes,email,' . $cliente->id,
             'telefone' => 'required|string',
             'endereco' => 'nullable|string',
         ]);
 
-        // 2. Salva o novo cliente
-        Cliente::create($request->all());
+        $cliente->update($validated);
 
-        // 3. Redireciona de volta para a lista com uma mensagem de sucesso
-        return redirect()->route('clientes.index')->with('success', 'Cliente cadastrado com sucesso!');
-    }
-    // Abre a tela de edição
-public function edit(Cliente $cliente) 
-{
-    return view('clientes.edit', compact('cliente'));
-}
-
-    // Salva a alteração no banco
-    public function update(Request $request, Cliente $cliente) 
-    {
-        $request->validate([
-            'nome' => 'required|string|max:255',
-            'cpf' => 'required|string|unique:clientes,cpf,' . $cliente->id,
-            'email' => 'required|email|unique:clientes,email,' . $cliente->id,
-            'telefone' => 'required',
-            'endereco' => 'string',
-        ]);
-
-        $cliente->update($request->all());
-        return redirect()->route('clientes.index')->with('success', 'Cliente atualizado!');
+        return redirect()
+            ->route('clientes.index')
+            ->with('success', 'Cliente atualizado com sucesso!');
     }
 
-    // Exclui o cliente
-    public function destroy(Cliente $cliente) 
+    /**
+     * Remove um cliente do banco de dados.
+     */
+    public function destroy(Cliente $cliente)
     {
         $cliente->delete();
-        return redirect()->route('clientes.index')->with('success', 'Cliente removido!');
-    }
 
+        return redirect()
+            ->route('clientes.index')
+            ->with('success', 'Cliente removido com sucesso!');
     }
+}

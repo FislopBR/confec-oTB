@@ -1,60 +1,57 @@
 <?php
 
 namespace App\Http\Controllers;
-use App\Http\Controllers\Controller;
+
 use App\Models\Estoques;
 use Illuminate\Http\Request;
 
-
 class EstoquesController extends Controller
 {
-    public function index() 
+    public function index()
     {
-    $estoques= Estoques::all(); // Busca todos os estoques
-    return view('estoques.index', compact('estoques'));
-}
-    public function create() {
+        $estoques = Estoques::all();
+        return view('estoques.index', compact('estoques'));
+    }
+
+    public function create()
+    {
         return view('estoques.create');
     }
 
     public function store(Request $request)
     {
-        $validatedData = $request->validate([
-            'estoque_id' => 'required|string|max:255',
-            'capacidade' => 'nullable|string|max:8',
+        $validated = $request->validate([
+            'estoque_id'  => 'required|string|max:255|unique:estoques,estoque_id',
+            'capacidade'  => 'nullable|string|max:8',
             'localizacao' => 'nullable|string|max:100',
         ]);
 
-        Estoques::create($validatedData);
+        Estoques::create($validated);
 
         return redirect()->route('estoques.index')->with('success', 'Estoque cadastrado com sucesso!');
     }
 
-    // Abre a tela de edição
-public function edit(Estoques $estoques)
-{
-    return view('estoques.edit', compact('estoques'));
-}
-
-// Salva as alterações no banco de dados
-public function update(Request $request, Estoques $estoques)
-{
-    $request->validate([
-            'estoque_id' => 'required|string|max:255',
-            'capacidade' => 'nullable|string|max:8',
-            'localizacao' => 'nullable|string|max:100',
-    ]);
- $estoques->update($request->all());
-    return redirect()->route('estoques.index')->with('success', 'Estoque atualizado!');
-    
+    public function edit(Estoques $estoque) // renomeei $estoques para $estoque para clareza
+    {
+        return view('estoques.edit', compact('estoque'));
     }
 
-// Exclui o cliente
-public function destroy(Estoques $estoques)
-{
-    $estoques->delete();
-    return redirect()->route('estoques.index')->with('success', 'Estoque removido!');
+    public function update(Request $request, Estoques $estoque)
+    {
+        $validated = $request->validate([
+            'estoque_id'  => 'required|string|max:255|unique:estoques,estoque_id,' . $estoque->id,
+            'capacidade'  => 'nullable|string|max:8',
+            'localizacao' => 'nullable|string|max:100',
+        ]);
+
+        $estoque->update($validated);
+
+        return redirect()->route('estoques.index')->with('success', 'Estoque atualizado com sucesso!');
+    }
+
+    public function destroy(Estoques $estoque)
+    {
+        $estoque->delete();
+        return redirect()->route('estoques.index')->with('success', 'Estoque removido!');
+    }
 }
-
-}    
-

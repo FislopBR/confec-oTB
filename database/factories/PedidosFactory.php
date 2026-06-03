@@ -14,11 +14,15 @@ class PedidosFactory extends Factory
      *
      * @return array<string, mixed>
      */
-    public function definition(): array {
-    return [
-        'cpf' => fake()->text(),
-        'endereco' => fake()->text(),
-
-    ];
-}
+    public function definition(): array
+    {
+        return [
+            'user_id' => \App\Models\User::inRandomOrder()->first()?->id ?? \App\Models\User::factory(),
+            'total' => $this->faker->numberBetween(10000, 100000) / 100,
+            'desconto' => $this->faker->numberBetween(0, 5000) / 100,
+            'status' => $this->faker->randomElement(['Pendente', 'Em Produção', 'Finalizado']),
+            'codigo_rastreio' => 'TR-' . strtoupper($this->faker->unique()->bothify('###???')),
+            'observacoes' => $this->faker->optional()->sentence(),
+        ];
+    }
 }

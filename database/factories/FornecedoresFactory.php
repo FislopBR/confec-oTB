@@ -14,11 +14,13 @@ class FornecedoresFactory extends Factory
      *
      * @return array<string, mixed>
      */
-public function definition(): array {
-    return [
-        'nome' => fake()->name,
-        'telefone' => fake()->text(),
-        'endereco' => fake()->text,
-    ];
-}
+public function definition(): array
+    {
+        return [
+            'nome' => $this->faker->company(),
+            'telefone' => $this->faker->phoneNumber(),
+            'email' => $this->faker->unique()->safeEmail(),
+            'cnpj' => $this->faker->unique()->numerify('##.###.###/####-##'),
+        ];
+    }
 }

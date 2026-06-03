@@ -4,22 +4,23 @@ namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-/**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Produto>
- */
 class ProdutosFactory extends Factory
 {
-    /**
-     * Define the model's default state.
-     *
-     * @return array<string, mixed>
-     */
-    public function definition(): array {
-    return [
-        'nome' => fake()->name,
-        'preco' => fake()->randomFloat(2, 10, 100), // Preço entre 10 e 100
-        'categoria' => fake()->randomElement(['Camisa', 'Calça', 'Vestido', 'Acessório']),
-        'descricao' => fake()->sentence(),
-    ];
-}
+    public function definition(): array
+    {
+        $nomes = [
+            'Camiseta Polo Azul', 'Camiseta Polo Branca', 'Camiseta Polo Vermelha',
+            'Calça Jeans Clássica', 'Calça Social Preta', 'Calça Cargo Cinza',
+            'Vestido Social Preto', 'Vestido Casual Estampado', 'Vestido Midi Liso',
+            'Jaqueta Jeans', 'Blazer Executivo', 'Meia-estação Bege',
+            'Shorts Casual', 'Bermuda Esportiva', 'Saia Plissada'
+        ];
+
+        return [
+            'nome' => $this->faker->randomElement($nomes),
+            'preco_venda' => $this->faker->numberBetween(5000, 25000) / 100,
+            'referencia' => 'SKU-' . strtoupper($this->faker->unique()->bothify('??###')),
+            'estoque' => $this->faker->numberBetween(0, 500),
+        ];
+    }
 }

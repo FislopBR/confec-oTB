@@ -2,86 +2,78 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Produto; // Certifique-se de ter o Model Produto criado
+use App\Models\Produto;
 use Illuminate\Http\Request;
 
 class ProdutoController extends Controller
 {
-    /**
-     * Lista todos os produtos.
-     */
     public function index()
     {
         $produtos = Produto::all();
         return view('produtos.index', compact('produtos'));
     }
 
-    /**
-     * Exibe o formulário de criação.
-     */
     public function create()
     {
         return view('produtos.create');
     }
 
-    /**
-     * Salva um novo produto no banco.
-     */
     public function store(Request $request)
     {
-        $request->validate([
-            'nome'      => 'required|string|max:255',
-            'descricao' => 'required|string',
-            'preco'     => 'required|numeric',
-            'categoria' => 'required|string',
-            'sku'       => 'required|string|unique:produtos,sku',
-            
+        $validated = $request->validate([
+            'nome'                => 'required|string|max:255',
+            'preco'               => 'required|numeric',
+            'categoria'           => 'required|string',
+            'descricao'           => 'nullable|string',
+            'sku'                 => 'required|string|unique:produtos',
+            'quantidade'          => 'required|integer|min:0',
+            'local_armazenamento' => 'nullable|string|max:100',
+            'imagem'              => 'nullable|image|mimes:jpeg,png,jpg|max:2048'
         ]);
 
-        Produto::create($request->all());
+        if ($request->hasFile('imagem')) {
+            $path = $request->file('imagem')->store('produtos', 'public');
+            $validated['imagem'] = $path;
+        }
+
+        Produto::create($validated);
 
         return redirect()->route('produtos.index')
-                         ->with('success', 'Produto cadastrado com sucesso!');
+            ->with('success', 'Produto cadastrado com sucesso!');
     }
 
-    /**
-     * Exibe o formulário de edição.
-     */
-    public function edit(string $id)
+    public function edit(Produto $produto)
     {
-        $produto = Produto::findOrFail($id);
         return view('produtos.edit', compact('produto'));
     }
 
-    /**
-     * Atualiza os dados do produto.
-     */
-    public function update(Request $request, string $id)
+    public function update(Request $request, Produto $produto)
     {
-        $produto = Produto::findOrFail($id);
-
-        $request->validate([
-            'nome'      => 'required|string|max:255',
-            'preco'     => 'required|numeric',
-            'categoria' => 'required|string',
-            'descricao' => 'required|string',
+        $validated = $request->validate([
+            'nome'                => 'required|string|max:255',
+            'preco'               => 'required|numeric',
+            'categoria'           => 'required|string',
+            'descricao'           => 'nullable|string',
+            'sku'                 => 'required|string|unique:produtos,sku,' . $produto->id,
+            'quantidade'          => 'required|integer|min:0',
+            'local_armazenamento' => 'nullable|string|max:100',
+            'imagem'              => 'nullable|image|mimes:jpeg,png,jpg|max:2048'
         ]);
 
-        $produto->update($request->all());
+        $produto->update($validated);
 
         return redirect()->route('produtos.index')
-                         ->with('success', 'Produto atualizado com sucesso!');
+            ->with('success', 'Produto atualizado com sucesso!');
     }
 
-    /**
-     * Remove o produto.
-     */
-    public function destroy(string $id)
+    public function destroy(Produto $produto)
     {
-        $produto = Produto::findOrFail($id);
+        if ($produto->imagem && \Storage::disk('public')->exists($produto->imagem)) {
+            \Storage::disk('public')->delete($produto->imagem);
+        }
         $produto->delete();
 
         return redirect()->route('produtos.index')
-                         ->with('success', 'Produto excluído com sucesso!');
+            ->with('success', 'Produto excluído com sucesso!');
     }
 }

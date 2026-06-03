@@ -5,7 +5,9 @@
                 <!-- Logo -->
                 <div class="shrink-0 flex items-center">
                     <a href="{{ route('dashboard') }}">
-                        <img src="{{ asset('images/logo.png') }}" alt="Logo TS Confecções" class="block h-12 w-auto">
+                        <p class="block h-24 w-auto">
+                            Roupas Normais
+                        </p>
                     </a>
                 </div>
 
